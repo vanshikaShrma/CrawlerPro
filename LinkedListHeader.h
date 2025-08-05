@@ -1,5 +1,10 @@
 #include <iostream>
+#include "./stringHeader.h"
+
 using namespace std;
+#ifndef LINKED_LIST_HEADER_H
+#define LINKED_LIST_HEADER_H
+
 template <typename T>
 class Node
 {
@@ -37,8 +42,7 @@ public:
     Node<T> *deleteHead();
     Node<T> *deleteatIndex(int index); // 0 indexed
     Node<T> *deleteFromLast();
-
-    // display list
+    // bool contains(T data);
     void display();
 };
 
@@ -97,12 +101,17 @@ void List<T>::addAtLast(T data)
         temp = temp->next;
     }
     temp->next = newNode;
+    cout << "[List] Added: " << data << endl;
 }
 
 template <typename T>
 void List<T>::display()
 {
     Node<T> *temp = head;
+    if(!temp)
+    {
+          std::cout << "[List] display(): List is empty!" << std::endl;
+    }
     while (temp)
     {
         cout << (temp->val) << "\n";
@@ -179,3 +188,23 @@ Node<T> *List<T>::deleteatIndex(int index)
     tail->next = temp->next;
     return t;
 }
+// template <typename T>
+// bool List<T>::contains(T data) {
+//     Node<T>* temp = head;
+//     while (temp) {
+//         if (temp->val == data)
+//             return true;
+//         temp = temp->next;
+//     }
+//     return false;
+// }
+// bool List<char*>::contains(char* data) {
+//     Node<char*>* temp = head;
+//     while (temp) {
+//         if (my_strcmp(temp->val, data) == 0)
+//             return true;
+//         temp = temp->next;
+//     }
+//     return false;
+// }
+#endif

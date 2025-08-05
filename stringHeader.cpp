@@ -1,4 +1,5 @@
 #include "./stringHeader.h"
+# include <fstream>
 
 int my_strlen(char *s)
 {
@@ -48,8 +49,6 @@ char *my_strcat(char *dest, const char *src)
     int len1 = my_strlen(dest);
     // len1++;
     int i = 0;
-    cout<<src<<endl;
-    cout<<dest<<endl;
     while (src[i] != '\0')
     {
         dest[len1] = src[i];
@@ -57,23 +56,22 @@ char *my_strcat(char *dest, const char *src)
         i++;
     }
     dest[len1] = '\0';
-    cout<<dest<<endl;
     return dest;
 }
-int my_strchr(char *s, char c)
+char* my_strchr(const char *s, char c)
 {
     int i = 0;
     while (s[i] != '\0')
     {
         if (s[i] == c)
         {
-            return i;
+            return (char*)(s+i);
         }
         i++;
     }
-    return -1;
+    return nullptr;
 }
-int my_strstr(char *haystack, char *needle)
+char* my_strstr(const char *haystack, const char *needle)
 {
     if (!*needle)
         return 0;
@@ -87,10 +85,10 @@ int my_strstr(char *haystack, char *needle)
         }
         if (needle[j] == '\0')
         {
-            return i;
+            return (char*)(haystack+i);
         }
     }
-    return -1;
+    return nullptr;
 }
  void reverse_inplace(char *s)
  {
@@ -142,6 +140,24 @@ int count_words(const char *s) {
     }
 
     return count;
+}
+char* readFile(const char* filepath) {
+    ifstream file(filepath, ios::in);
+    if (!file.is_open()) {
+        cout << "Could not open file: " << filepath << endl;
+        return nullptr;
+    }
+
+    file.seekg(0, ios::end);
+    size_t length = file.tellg();
+    file.seekg(0, ios::beg);
+
+    char* buffer = new char[length + 1];
+    file.read(buffer, length);
+    buffer[length] = '\0';
+
+    file.close();
+    return buffer;
 }
 // int my_strtok(char* str,char deli)
 // {

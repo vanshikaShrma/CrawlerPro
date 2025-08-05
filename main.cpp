@@ -8,7 +8,9 @@ int main(int argc,char** argv)
     cout<<argv[1]<<endl;
     cout<<argv[2];
     Crawler cw(argv[1],argv[2],30);
-    cw.downloadHTML();
-
+     cout << "[main] cw: " << &cw << endl;
+    cw.downloadHTML(argv[1],2,1,20);
+    cout<<"ek kaam hogya"<<endl;
+    cw.displayURLs();
     return 0;
 }

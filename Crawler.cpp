@@ -3,6 +3,7 @@
 #include "./stringHeader.h"
 #include <stdlib.h>
 #include <filesystem>
+#include "./LinkedListHeader.h"
 
 using namespace std;
 namespace fs = filesystem;
@@ -17,27 +18,35 @@ Crawler::Crawler(char *url, char *targetDir, int depth)
     cout << tarDir << endl;
     cout << this->depth << endl;
 }
-void Crawler::downloadHTML()
+void Crawler::downloadHTML(char *url, int depth, int curr_depth, int linkCount)
 {
+    cout<<"[Download for url: ]"<<url<<endl;
     char cmd[100];
     cmd[0] = '\0';
-    char file[15]="abcdef.html";
-    // giveName(file,15);
-    cout<<file<<endl;
-    if (checkURL())
+    char file[15];
+    giveName(file, 15);
+    if (checkURL(url))
     {
+        insertUrl(url);
         checkDirectory();
-        cout<<"hello"<<endl;
-        my_strcat(cmd, "wget ");
-        my_strcat(cmd, URL);
+        char *fullPath = new char[200];
+        fullPath[0] = '\0';
+        my_strcat(fullPath, tarDir);
+        my_strcat(fullPath, "/");
+        my_strcat(fullPath, file);
+        cout << "hello" << endl;
+        my_strcat(cmd, "wget -q ");
+        my_strcat(cmd, url);
         my_strcat(cmd, " -O ");
         my_strcat(cmd, tarDir);
         my_strcat(cmd, "/");
-        cout<<"aaaaaaa"<<file<<endl;
         my_strcat(cmd, file);
         cout << "cmd : " << cmd << endl;
-
         system(cmd);
+        cout << "Calling extractUrls with filePath: " << fullPath << endl;
+        if (!fs::exists(fullPath)) cout << "File does not exist!" << endl;
+        extractUrls(fullPath,depth,curr_depth,linkCount);
+        delete[] fullPath;
     }
     else
     {
@@ -62,15 +71,15 @@ void Crawler::checkDirectory()
         cout << "Directory given already exists";
     }
 }
-int Crawler::checkURL()
+int Crawler::checkURL(char *testURL)
 {
     char cmd[100];
     cmd[0] = '\0';
     my_strcat(cmd, "wget ");
     my_strcat(cmd, "--spider -q ");
-    my_strcat(cmd, URL);
+    my_strcat(cmd, testURL);
     cout << "cmd for check url: " << cmd << endl;
-    if (system(cmd)==0)
+    if (system(cmd) == 0)
     {
         cout << "Reachable url" << endl;
     }
@@ -81,15 +90,87 @@ int Crawler::checkURL()
     }
     return 1;
 }
-void Crawler::giveName(char* filename,int len)
+void Crawler::giveName(char *filename, int len)
 {
-    char charSet[]="abcdefghigklmnopqrstuvwxyz";
-    for(int i=0;i<len-5;i++)
+    char charSet[] = "abcdefghijklmnopqrstuvwxyz";
+    int i;
+    for (i = 0; i < len - 6; i++)
     {
-        int index=rand()%25;
-        filename[i]=charSet[index];
+        int index = rand() % 25;
+        filename[i] = charSet[index];
     }
-    filename[len-5]='\0';
-    my_strcat(filename,".html");
-    cout<<"file name generated is: "<<filename<<endl;
+    filename[i] = '\0';
+    my_strcat(filename, ".html");
+    cout << "file name generated is: " << filename << endl;
+}
+void Crawler ::extractUrls(char *filepath, int depth, int currDepth, int linkCount)
+{
+    if (currDepth > depth) {
+        cout<<"Reached Max depth returning back"<<endl;
+        return;
+    }
+    cout << "filePath : " << filepath << endl;
+    char *buffer = readFile(filepath);
+
+    if (buffer == nullptr)
+    {
+        cout << "File not found" << endl;
+        return;
+    }
+    // cout << "file : " << buffer << endl;
+    char *searchPosition = buffer;
+    char *ahrefPos = nullptr;
+    while ((ahrefPos= my_strstr(searchPosition, "<a href=\"http")) != nullptr)
+    {
+        char *qStart = my_strstr(ahrefPos, "\"");
+        if (qStart == nullptr)
+            break;
+
+        char *qEnd = my_strstr(qStart + 1, "\"");
+        if (qEnd == nullptr)
+            break;
+
+        int len = qEnd - qStart - 1;
+        if (len > MAX_LEN)
+            len = MAX_LEN - 1;
+        char *url = new char[MAX_LEN];
+        int i = 0;
+        while (i < len)
+        {
+            url[i] = qStart[i + 1];
+            i++;
+        }
+        url[len] = '\0';
+        cout << "url : " << url << endl;
+        cout << "calling crawl for url : " << url << endl;
+        downloadHTML(url, depth, currDepth + 1, linkCount);
+
+        searchPosition = qEnd + 1;
+        delete[] url;
+
+    }
+    cout << "no nested ahref found" << endl;
+    delete[] buffer;
+}
+
+void Crawler::displayURLs()
+{
+    cout<<"These are urls: " << endl;
+    urlList.display();
+    cout << "[displayURLs] this: " << this << endl;
+
+}
+void Crawler::insertUrl(char *url)
+{
+    char* urlStore=new char[my_strlen(url)+1];
+    // if (urlList.contains(url)) {
+    //     cout << "URL already exists: " << url << endl;
+    //     return;
+    // }
+    my_strcpy(urlStore,url);
+    urlList.addAtLast(urlStore);
+    cout << "url inserted: " << url << endl;
+    urlList.display();
+    cout << "endl" << endl;
+    cout << "[insertUrl] this: " << this << endl;
 }

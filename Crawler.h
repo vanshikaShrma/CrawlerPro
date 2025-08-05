@@ -1,4 +1,5 @@
 #include<iostream>
+#include "./LinkedListHeader.h"
 using namespace std;
 
 class Crawler{
@@ -6,11 +7,15 @@ class Crawler{
     char URL[100];
     char tarDir[100];
     int depth;
+    List<char*> urlList;
     public:
     Crawler();
     Crawler(char* url,char* targetDir,int depth);
-    void downloadHTML();
+    void downloadHTML(char * url,int depth,int curr_depth,int linkCount);
     void checkDirectory();
-    int checkURL();
+    int checkURL(char* testURL);
     void giveName(char* filename,int len);
+    void extractUrls(char *filepath, int depth, int currDepth, int linkCount);
+    void insertUrl(char *url);
+    void displayURLs();
 };

@@ -1,6 +1,7 @@
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 #include <iostream>
+#include "./LinkedListHeader.h"
 using namespace std;
 
 template <typename K, typename V>
@@ -16,6 +17,17 @@ public:
         next = NULL;
     }
 };
+
+// template <typename K, typename V>
+// struct hashStruct{
+//     K key;
+//     V value;
+//     hashStruct(K k,V v)
+//     {
+//         key=k;
+//         value=v;
+//     }
+// };
 
 template <typename K, typename V>
 class HashTable {
