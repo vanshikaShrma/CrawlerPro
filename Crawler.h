@@ -1,5 +1,6 @@
 #include<iostream>
 #include "./LinkedListHeader.h"
+#include "./HashTable.h"
 using namespace std;
 
 class Crawler{
@@ -8,6 +9,7 @@ class Crawler{
     char tarDir[100];
     int depth;
     List<char*> urlList;
+    HashTable<char*,char*> urlMap;
     public:
     Crawler();
     Crawler(char* url,char* targetDir,int depth);

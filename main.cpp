@@ -9,7 +9,7 @@ int main(int argc,char** argv)
     cout<<argv[2];
     Crawler cw(argv[1],argv[2],30);
      cout << "[main] cw: " << &cw << endl;
-    cw.downloadHTML(argv[1],2,1,20);
+    cw.downloadHTML(argv[1],3,0,5);
     cout<<"ek kaam hogya"<<endl;
     cw.displayURLs();
     return 0;

@@ -6,13 +6,13 @@ using namespace std;
 #define LINKED_LIST_HEADER_H
 
 template <typename T>
-class Node
+class NodeL
 {
 public:
     T val;
-    Node *next;
+    NodeL *next;
     // Constructors
-    Node(T val)
+    NodeL(T val)
     {
         this->val = val;
         this->next = NULL;
@@ -22,12 +22,12 @@ public:
 template <typename T>
 class List
 {
-    Node<T> *head = NULL;
+    NodeL<T> *head = NULL;
 
 public:
     ~List()
     {
-        Node<T> *temp;
+        NodeL<T> *temp;
         while (head)
         {
             temp = head;
@@ -39,17 +39,16 @@ public:
     void addAtStart(T data);
     void addInMiddle(int index, T data);
     void addAtLast(T data);
-    Node<T> *deleteHead();
-    Node<T> *deleteatIndex(int index); // 0 indexed
-    Node<T> *deleteFromLast();
-    // bool contains(T data);
+    NodeL<T> *deleteHead();
+    NodeL<T> *deleteatIndex(int index); // 0 indexed
+    NodeL<T> *deleteFromLast();
     void display();
 };
 
 template <typename T>
 void List<T>::addAtStart(T data)
 {
-    Node<T> *newNode = new Node<T>(data);
+    NodeL<T> *newNode = new NodeL<T>(data);
     newNode->next = head;
     head = newNode;
 }
@@ -62,14 +61,14 @@ void List<T>::addInMiddle(int index, T data) {
         return;
     }
 
-    Node<T>* newNode = new Node<T>(data);
+    NodeL<T>* newNode = new NodeL<T>(data);
     if (index == 0 || head == NULL) {
         newNode->next = head;
         head = newNode;
         return;
     }
 
-    Node<T>* temp = head;
+    NodeL<T>* temp = head;
     int i = 0;
     while (temp != NULL && i < index - 1) {
         temp = temp->next;
@@ -87,7 +86,7 @@ void List<T>::addInMiddle(int index, T data) {
 template <typename T>
 void List<T>::addAtLast(T data)
 {
-    Node<T> *newNode = new Node<T>(data);
+    NodeL<T> *newNode = new NodeL<T>(data);
 
     if (head == NULL)
     {
@@ -95,7 +94,7 @@ void List<T>::addAtLast(T data)
         return;
     }
 
-    Node<T> *temp = head;
+    NodeL<T> *temp = head;
     while (temp->next != NULL)
     {
         temp = temp->next;
@@ -107,7 +106,7 @@ void List<T>::addAtLast(T data)
 template <typename T>
 void List<T>::display()
 {
-    Node<T> *temp = head;
+    NodeL<T> *temp = head;
     if(!temp)
     {
           std::cout << "[List] display(): List is empty!" << std::endl;
@@ -119,20 +118,20 @@ void List<T>::display()
     }
 }
 template <typename T>
-Node<T> *List<T>::deleteHead()
+NodeL<T> *List<T>::deleteHead()
 {
     if (head == NULL)
     {
         cout << "List undeflow\n";
         return NULL;
     }
-    Node<T> *temp = head;
+    NodeL<T> *temp = head;
     head = head->next;
     return temp;
 }
 
 template <typename T>
-Node<T> *List<T>::deleteFromLast()
+NodeL<T> *List<T>::deleteFromLast()
 {
     if (head == NULL)
     {
@@ -141,12 +140,12 @@ Node<T> *List<T>::deleteFromLast()
     }
     if (head->next == NULL)
     {
-        Node<T> *temp = head;
+        NodeL<T> *temp = head;
         head = NULL; //use delete
         return head;
     }
-    Node<T> *temp = head;
-    Node<T> *tail = NULL;
+    NodeL<T> *temp = head;
+    NodeL<T> *tail = NULL;
     while (temp->next)
     {
         tail = temp;
@@ -157,10 +156,10 @@ Node<T> *List<T>::deleteFromLast()
 }
 
 template <typename T>
-Node<T> *List<T>::deleteatIndex(int index)
+NodeL<T> *List<T>::deleteatIndex(int index)
 {
     int i = 0;
-    Node<T> *temp = head;
+    NodeL<T> *temp = head;
     if (head == NULL)
     {
         cout << "List Underflow";
@@ -168,11 +167,11 @@ Node<T> *List<T>::deleteatIndex(int index)
     }
     if (index == 0)
     {
-        Node<T> *t = head;
+        NodeL<T> *t = head;
         head = head->next;
         return t;
     }
-    Node<T> *tail = NULL;
+    NodeL<T> *tail = NULL;
     while (temp && i < index)
     {
         tail = temp;
@@ -184,27 +183,8 @@ Node<T> *List<T>::deleteatIndex(int index)
         cout << "NO node exist";
         return NULL;
     }
-    Node<T> *t = temp;
+    NodeL<T> *t = temp;
     tail->next = temp->next;
     return t;
 }
-// template <typename T>
-// bool List<T>::contains(T data) {
-//     Node<T>* temp = head;
-//     while (temp) {
-//         if (temp->val == data)
-//             return true;
-//         temp = temp->next;
-//     }
-//     return false;
-// }
-// bool List<char*>::contains(char* data) {
-//     Node<char*>* temp = head;
-//     while (temp) {
-//         if (my_strcmp(temp->val, data) == 0)
-//             return true;
-//         temp = temp->next;
-//     }
-//     return false;
-// }
 #endif
