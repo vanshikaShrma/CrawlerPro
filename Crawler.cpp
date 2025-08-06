@@ -38,13 +38,13 @@ void Crawler::downloadHTML(char *url, int depth, int curr_depth, int linkCount)
     giveName(file, 15);
     if (checkURL(url))
     {
-        insertUrl(url);
         checkDirectory();
         char *fullPath = new char[200];
         fullPath[0] = '\0';
         my_strcat(fullPath, tarDir);
         my_strcat(fullPath, "/");
         my_strcat(fullPath, file);
+        insertUrl(url,fullPath);
         cout << "hello" << endl;
         my_strcat(cmd, "wget -q ");
         my_strcat(cmd, url);
@@ -162,30 +162,76 @@ void Crawler ::extractUrls(char *filepath, int depth, int currDepth, int linkCou
         searchPosition = qEnd + 1;
         delete[] url;
     }
-    cout << "no nested ahref found" << endl;
+    // abhi ke liye relative check krne ko likh ri
+    searchPosition = buffer;
+    while ((ahrefPos = my_strstr(searchPosition, "<a href=\"/")) != nullptr && currPageCount < linkCount)
+    {
+        char *qStart = my_strstr(ahrefPos, "\"");
+        if (qStart == nullptr)
+            break;
+
+        char *qEnd = my_strstr(qStart + 1, "\"");
+        if (qEnd == nullptr)
+            break;
+
+        int len = qEnd - qStart - 1;
+        if (len > MAX_LEN)
+            len = MAX_LEN - 1;
+        char *url = new char[MAX_LEN];
+        int i = 0;
+        while (i < len)
+        {
+            url[i] = qStart[i + 1];
+            i++;
+        }
+        url[len] = '\0';
+        char *finalUrl = new char[MAX_LEN];
+        my_strcpy(finalUrl, URL);
+        int baseLen = my_strlen(finalUrl);
+        if (baseLen > 0 && finalUrl[baseLen - 1] == '/')
+        {
+            finalUrl[baseLen - 1] = '\0';
+        }
+        my_strcat(finalUrl, url);
+        cout<<"Relative url ye tha: "<<url<<endl;
+        cout << "url after making it absolute: " << finalUrl << endl;
+        cout << "calling crawl for url : " << finalUrl << endl;
+        downloadHTML(finalUrl, depth, currDepth + 1, linkCount);
+        currPageCount++;
+        searchPosition = qEnd + 1;
+        delete[] url;
+        delete[] finalUrl;
+    }
+    cout << "no nested links found" << endl;
     delete[] buffer;
 }
 
-void Crawler::displayURLs()
-{
-    cout << "These are urls: " << endl;
-    urlList.display();
-    cout << "[displayURLs] this: " << this << endl;
-}
-void Crawler::insertUrl(char *url)
+void Crawler::insertUrl(char *url , char* fullPath)
 {
     char *urlStore = new char[my_strlen(url) + 1];
+    char* fullPathStore = new char[my_strlen(fullPath)+1];
     my_strcpy(urlStore, url);
+    my_strcpy(fullPathStore,fullPath);
     char *dummyOut = nullptr;
     if (urlMap.search(urlStore, dummyOut))
     {
         cout << "URL already exists (skipping): " << url << endl;
         delete[] urlStore;
+        delete[] fullPathStore;
         return;
     }
     urlList.addAtLast(urlStore);
-    urlMap.insert(urlStore, urlStore);
+    urlMap.insert(urlStore, fullPathStore);
     cout << "url inserted: " << url << endl;
     cout << "endl" << endl;
     cout << "[insertUrl] this: " << this << endl;
+}
+void Crawler::displayURLs()
+{
+    cout << "These are urls inside linked list urlList: " << endl;
+    urlList.display();
+    cout<<endl;
+    cout<<"------Now in hash------"<<endl;
+    urlMap.display();
+    cout << "[displayURLs] this: " << this << endl;
 }

@@ -18,6 +18,6 @@ class Crawler{
     int checkURL(char* testURL);
     void giveName(char* filename,int len);
     void extractUrls(char *filepath, int depth, int currDepth, int linkCount);
-    void insertUrl(char *url);
+    void insertUrl(char *url , char* fullPath);
     void displayURLs();
 };
