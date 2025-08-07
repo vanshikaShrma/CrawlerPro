@@ -235,3 +235,7 @@ void Crawler::displayURLs()
     urlMap.display();
     cout << "[displayURLs] this: " << this << endl;
 }
+void Crawler::wordsExtracted()
+{
+    urlMap.traverse();
+}

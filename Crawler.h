@@ -20,4 +20,5 @@ class Crawler{
     void extractUrls(char *filepath, int depth, int currDepth, int linkCount);
     void insertUrl(char *url , char* fullPath);
     void displayURLs();
+    void wordsExtracted();
 };

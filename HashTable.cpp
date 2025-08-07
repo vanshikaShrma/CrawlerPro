@@ -10,9 +10,16 @@ int HashTable<char*, char*>::getIndex(char* key) {
     for (int i = 0; key[i] != '\0'; i++) {
         sum += key[i];
     }
-    return sum % 10;
+    return sum % tableSize;
 }
-
+template <>
+int HashTable<char*, int>::getIndex(char* key) {
+    int sum = 0;
+    for (int i = 0; key[i] != '\0'; i++) {
+        sum += key[i];
+    }
+    return sum % tableSize;
+}
 template <>
 void HashTable<char*, char*>::insert(char* key, char* value) {
     int index = getIndex(key);
@@ -33,6 +40,27 @@ void HashTable<char*, char*>::insert(char* key, char* value) {
     table[index] = newNode;
     elementCount++;
 }
+template <>
+void HashTable<char*, int>::insert(char* key, int value) {
+    int index = getIndex(key);
+
+    Node<char*, int>* temp = table[index];
+    while (temp) {
+        if (my_strcmp(temp->key, key) == 0) {
+            temp->value += value;
+            return;
+        }
+        temp = temp->next;
+    }
+
+    char* keyCopy = new char[my_strlen(key) + 1];
+    my_strcpy(keyCopy, key);
+    Node<char*, int>* newNode = new Node<char*, int>(keyCopy, value);
+    newNode->next = table[index];
+    table[index] = newNode;
+    elementCount++;
+}
+
 
 
 template <>
@@ -48,6 +76,33 @@ bool HashTable<char*, char*>::search(char* key, char*& outVal) {
     }
     return false;
 }
+template <>
+bool HashTable<char*, int>::search(char* key, int& outVal) {
+    int index = getIndex(key);
+    Node<char*, int>* temp = table[index];
+    while (temp) {
+        if (my_strcmp(temp->key, key) == 0) {
+            outVal = temp->value;
+            return true;
+        }
+        temp = temp->next;
+    }
+    return false;
+}
+
+template <>
+void HashTable<char*, char*>::traverse() {
+    for (int i = 0; i < tableSize; i++) {
+        Node<char*, char*>* temp = table[i];
+        while (temp) {
+            cout << "[" << temp->key << ":" << temp->value << "]"<<endl;
+            extractWords(temp->key,temp->value);
+            temp = temp->next;
+        }
+        cout << "NULL\n";
+    }
+}
+
 
 
 template <>

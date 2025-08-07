@@ -12,3 +12,6 @@ void reverse_inplace(char *s);
 int is_palindrome(char *s);
 int count_words(const char *s);
 char* readFile(const char* filepath);
+char* removeHTMLTags(char* htmlContent);
+bool isCommonWord(char* word);
+void extractWords(char* url, char* filePath);

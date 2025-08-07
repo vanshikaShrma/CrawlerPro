@@ -37,6 +37,7 @@ public:
     bool search(K key, V& outVal); 
     void remove(K key);
     void display();
+    void traverse();
      double getLoadFactor() const;
     int getSize() const;
     int getElementCount() const;
@@ -164,11 +165,22 @@ void HashTable<K, V>::remove(K key) {
 // Display function
 template <typename K, typename V>
 void HashTable<K, V>::display() {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < tableSize; i++) {
         cout << "Index " << i << ": ";
         Node<K, V>* temp = table[i];
         while (temp) {
             cout << "[" << temp->key << ":" << temp->value << "] -> ";
+            temp = temp->next;
+        }
+        cout << "NULL\n";
+    }
+}
+template <typename K, typename V>
+void HashTable<K, V>::traverse() {
+    for (int i = 0; i < tableSize; i++) {
+        Node<K*, V*>* temp = table[i];
+        while (temp) {
+            cout << "[" << temp->key << ":" << temp->value << "]"<<endl;
             temp = temp->next;
         }
         cout << "NULL\n";
@@ -201,5 +213,17 @@ bool HashTable<char*, char*>::search(char* key, char*& outVal);
 
 template <>
 void HashTable<char*, char*>::remove(char* key);
+
+template <>
+void HashTable<char*, char*>::traverse();
+
+template <>
+void HashTable<char*, int>::insert(char* key, int value);
+
+template <>
+int HashTable<char*, int>::getIndex(char* key);
+
+template <>
+bool HashTable<char*, int>::search(char* key, int& outVal);
 
 #endif
