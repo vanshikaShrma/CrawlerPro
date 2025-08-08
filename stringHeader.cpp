@@ -1,6 +1,9 @@
 #include "./stringHeader.h"
 #include "./HashTable.h"
 #include <fstream>
+#include <filesystem>
+using namespace std;
+namespace fs = std::filesystem;
 
 int my_strlen(char *s)
 {
@@ -289,7 +292,7 @@ bool isCommonWord(char *word)
         "these", "things", "think", "those", "through", "turn", "before", "being", "between", "both",
         "came", "does", "even", "first", "give", "going", "group",
         "hand", "hard", "high", "important", "into", "large",
-        "later", "left", "let", "line", "little", "live", "local","www",
+        "later", "left", "let", "line", "little", "live", "local", "www",
         "might", "never", "next", "often", "com",
         "open", "order", "own", "part", "place", "point", "put", "seem", "several", "show", "side",
         "since", "small", "social", "something", "state", "system",
@@ -383,6 +386,19 @@ void extractWords(char *url, char *filePath)
     if (mostFrequentWord)
     {
         cout << "Most frequent word: " << mostFrequentWord << " (frequency: " << maxFrequency << ")" << endl;
+        fs::path outputPath = "keywords.txt";
+        ofstream outFile(outputPath, ios::app);
+
+        if (outFile.is_open())
+        {
+            outFile << mostFrequentWord << " -> " << url << "\n";
+            outFile.close();
+        }
+        else
+        {
+            cout << "Error: Could not open file to write most frequent word." << endl;
+        }
+
         delete[] mostFrequentWord;
     }
 
